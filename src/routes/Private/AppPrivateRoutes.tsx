@@ -1,11 +1,16 @@
 import { Chat } from '@/pages'
-import { Route, Routes } from 'react-router-dom'
+import { RoutesWithNotFound } from '@/utilities'
+import { Route } from 'react-router-dom'
 
-function AppPrivateRoutes() {
+interface Props {
+  isLoadingAuth: boolean
+}
+
+function AppPrivateRoutes({ isLoadingAuth }: Props) {
   return (
-    <Routes>
+    <RoutesWithNotFound isLoadingAuth={isLoadingAuth}>
       <Route index element={<Chat />} />
-    </Routes>
+    </RoutesWithNotFound>
   )
 }
 export default AppPrivateRoutes

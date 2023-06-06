@@ -25,7 +25,7 @@ const MessageEmitent: React.FC<MessageEmitentProps> = ({
         alignItems={'center'}
         borderRadius={'8px 0px 8px 8px'}
         p={2}>
-        <Text>{message}</Text>
+        <Text fontSize={'1rem'}>{message}</Text>
         <Text as={'span'} alignSelf={'flex-end'}>
           {time}
         </Text>

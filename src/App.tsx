@@ -1,11 +1,12 @@
+import { AppRoutes } from '@/routes'
 import { Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { AppRoutes } from '@/routes'
+import { LoadingPage } from './pages'
 
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<strong>Loading...</strong>}>
+      <Suspense fallback={<LoadingPage />}>
         <AppRoutes />
       </Suspense>
     </BrowserRouter>

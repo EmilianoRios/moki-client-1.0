@@ -13,8 +13,8 @@ const config: ThemeConfig = {
 const themeChakra = extendTheme({
   config,
   fonts: {
-    body: `'Space Grotesk', sans-serif`,
-    heading: `'Space Grotesk', sans-serif`
+    body: `'Poppins', sans-serif`,
+    heading: `'Poppins', sans-serif`
   },
   colors
 })

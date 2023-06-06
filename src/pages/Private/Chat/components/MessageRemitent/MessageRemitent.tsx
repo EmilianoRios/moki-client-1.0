@@ -34,7 +34,7 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
         alignItems={'center'}
         borderRadius={'0px 8px 8px 8px'}
         p={2}>
-        <Text>{message}</Text>
+        <Text fontSize={'1rem'}>{message}</Text>
         <Text as={'span'} alignSelf={'flex-end'}>
           {time}
         </Text>

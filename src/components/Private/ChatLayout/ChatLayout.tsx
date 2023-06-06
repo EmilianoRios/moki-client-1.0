@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import React from 'react'
 
 interface ChatLayoutProps {
@@ -13,10 +13,9 @@ const ChatLayout: React.FC<ChatLayoutProps> = ({ children }) => {
       alignItems={'center'}
       h={'100vh'}
       w={'100%'}>
-      <Flex>
-        <Text>Contacts</Text>
+      <Flex overflow={'hidden'} borderRadius={'8px 8px 8px 8px'}>
+        {children}
       </Flex>
-      <Flex>{children}</Flex>
     </Flex>
   )
 }
