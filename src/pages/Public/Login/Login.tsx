@@ -11,27 +11,44 @@ import {
   VStack,
   Link
 } from '@chakra-ui/react'
+import { FirebaseError } from 'firebase/app'
 import { Field, Formik } from 'formik'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Link as ReactLink, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 
 function Login() {
+  const [errorCodeAuth, setErrorCodeAuth] = useState<string>()
   const navigate = useNavigate()
   const { signIn } = useContext(AuthContext)
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: MyFormValues) => {
     try {
       await signIn(data.email, data.password)
       navigate('/')
     } catch (error) {
-      console.log(error)
+      const firebaseError = error as FirebaseError
+
+      if (firebaseError.code === 'auth/user-not-found') {
+        // Mostrar mensaje de correo electrónico ya en uso al usuario
+        setErrorCodeAuth('Usuario o contraeña incorrectas.')
+      } else if (firebaseError.code === 'auth/wrong-password') {
+        // Mostrar mensaje de correo electrónico inválido al usuario
+        setErrorCodeAuth('Usuario o contraeña incorrectas.')
+      } else {
+        setErrorCodeAuth('Ha ocurrido un error.')
+      }
     }
   }
 
-  const initialValues = {
-    email: '' as string,
-    password: '' as string
+  interface MyFormValues {
+    email: string
+    password: string
+  }
+
+  const initialValues: MyFormValues = {
+    email: '',
+    password: ''
   }
 
   const validationSchema = Yup.object().shape({
@@ -60,41 +77,42 @@ function Login() {
               {(formik) => (
                 <form onSubmit={formik.handleSubmit}>
                   <VStack>
-                    <FormControl
-                      isInvalid={Boolean(
-                        formik.errors.email && formik.touched.email
-                      )}
-                      mb={4}>
-                      <Field
-                        bg={colors.seventhColor}
-                        type='string'
-                        name='email'
-                        placeholder='Correo'
-                        as={Input}
-                      />
-                      <FormErrorMessage
-                        justifyContent={'center'}
-                        alignItems={'center'}>
-                        {formik.errors.email}
-                      </FormErrorMessage>
-                    </FormControl>
-                    <FormControl
-                      isInvalid={Boolean(
-                        formik.errors.password && formik.touched.password
-                      )}>
-                      <Field
-                        bg={colors.seventhColor}
-                        type='password'
-                        name='password'
-                        placeholder='Contraseña'
-                        as={Input}
-                      />
-                      <FormErrorMessage
-                        justifyContent={'center'}
-                        alignItems={'center'}>
-                        {formik.errors.password}
-                      </FormErrorMessage>
-                    </FormControl>
+                    <Flex w={'100%'} flexDir={'column'} gap={2}>
+                      <FormControl
+                        isInvalid={Boolean(
+                          formik.errors.email && formik.touched.email
+                        )}>
+                        <Field
+                          bg={colors.seventhColor}
+                          type='string'
+                          name='email'
+                          placeholder='Correo'
+                          as={Input}
+                        />
+                        <FormErrorMessage
+                          justifyContent={'center'}
+                          alignItems={'center'}>
+                          {formik.errors.email}
+                        </FormErrorMessage>
+                      </FormControl>
+                      <FormControl
+                        isInvalid={Boolean(
+                          formik.errors.password && formik.touched.password
+                        )}>
+                        <Field
+                          bg={colors.seventhColor}
+                          type='password'
+                          name='password'
+                          placeholder='Contraseña'
+                          as={Input}
+                        />
+                        <FormErrorMessage
+                          justifyContent={'center'}
+                          alignItems={'center'}>
+                          {formik.errors.password}
+                        </FormErrorMessage>
+                      </FormControl>
+                    </Flex>
                     <Button
                       type='submit'
                       bg={colors.tertiaryColor}
@@ -106,6 +124,9 @@ function Login() {
                       color={colors.seventhColor}>
                       Iniciar Sesión
                     </Button>
+                    {errorCodeAuth && (
+                      <Text color={colors.eleventhColor}>{errorCodeAuth}</Text>
+                    )}
                     <Text fontSize={'0.9rem'}>
                       No tienes una cuenta?.{' '}
                       <Link

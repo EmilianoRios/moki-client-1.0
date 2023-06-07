@@ -1,9 +1,11 @@
 import colors from '@/config/configColors'
 import { AuthContext } from '@/context/AuthContext'
-import { Box, Button, Flex, Image, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Icon, Image, Text, Tooltip } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react'
 import { SearchContacts } from '../SearchContacts'
 import { DocumentData, doc, onSnapshot } from 'firebase/firestore'
+import { RxCross1 } from 'react-icons/rx'
+import { BiExit } from 'react-icons/bi'
 import { db } from '@/config/firebase'
 
 function Contacts() {
@@ -12,6 +14,9 @@ function Contacts() {
   const [openContacts, setOpenContacts] = useState('flex')
   const [contactChats, setContactChats] = useState<DocumentData>()
 
+  /**
+   *
+   */
   const handleProfile = () => {
     if (openProfile === 'none' && openContacts === 'flex') {
       setOpenProfile('flex')
@@ -23,15 +28,20 @@ function Contacts() {
   }
 
   useEffect(() => {
-    const getContactChats = () => {
-      const unsubsrcibe = onSnapshot(doc(db, 'userChats', user.uid), (doc) => {
-        setContactChats(doc.data())
-      })
-      return unsubsrcibe
-    }
+    if (user) {
+      const getContactChats = () => {
+        const unsubsrcibe = onSnapshot(
+          doc(db, 'userChats', user.uid),
+          (doc) => {
+            setContactChats(doc.data())
+          }
+        )
+        return unsubsrcibe
+      }
 
-    user?.uid && getContactChats()
-  }, [user?.uid])
+      user?.uid && getContactChats()
+    }
+  }, [user])
 
   return (
     <>
@@ -46,8 +56,33 @@ function Contacts() {
             MokiChat
           </Text>
           <Box>
-            <Button onClick={handleProfile}>
-              {openProfile === 'flex' ? 'Chat' : 'Mi Perfil'}
+            <Button
+              variant='unstyled'
+              onClick={handleProfile}
+              _hover={{ background: colors.primaryColor }}
+              rounded={'full'}>
+              <Flex justifyContent={'center'} alignItems={'center'}>
+                {openProfile === 'flex' ? (
+                  <Icon as={RxCross1} fontSize={30} />
+                ) : (
+                  <Tooltip
+                    hasArrow
+                    placement='left'
+                    label='Mi Perfil'
+                    bg={colors.fifthColor}
+                    color={colors.twelfthColor}>
+                    <Image
+                      src={(user && user.photoURL) || ''}
+                      alt={'profile'}
+                      rounded={'full'}
+                      w={'40px'}
+                      h={'40px'}
+                      objectFit={'cover'}
+                      _hover={{ transform: 'scale(1.1)' }}
+                    />
+                  </Tooltip>
+                )}
+              </Flex>
             </Button>
           </Box>
         </Flex>
@@ -89,6 +124,13 @@ function Contacts() {
                 </Flex>
               </Flex>
             ))}
+          {contactChats && Object.entries(contactChats).length === 0 ? (
+            <Flex m={'0 auto'}>
+              <Text>No tienes ningún contacto.</Text>
+            </Flex>
+          ) : (
+            ''
+          )}
         </Flex>
         <Flex
           display={openProfile}
@@ -115,7 +157,12 @@ function Contacts() {
               <Text>{user?.email}</Text>
             </Flex>
             <Flex>
-              <Button onClick={logOut}>Cerrar Sesión</Button>
+              <Button
+                _hover={{ background: colors.ninethColor }}
+                onClick={logOut}>
+                Cerrar Sesión
+                <Icon as={BiExit} ml={1} fontSize={20} />
+              </Button>
             </Flex>
           </Flex>
         </Flex>

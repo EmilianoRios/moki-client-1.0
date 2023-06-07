@@ -9,6 +9,8 @@ const colors = {
   seventhColor: '#FFFFFF',
   ninethColor: '#e17076',
   tenthColor: '#65aadd',
+  eleventhColor: '#db4043',
+  twelfthColor: '#000000',
   white: '#646165'
 }
 

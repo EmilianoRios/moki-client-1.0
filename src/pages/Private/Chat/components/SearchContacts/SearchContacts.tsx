@@ -5,7 +5,6 @@ import {
   Box,
   Divider,
   Flex,
-  FormControl,
   Image,
   Input,
   Spinner,
@@ -23,9 +22,7 @@ import {
   updateDoc,
   where
 } from 'firebase/firestore'
-import { Field, Formik } from 'formik'
-import { useContext, useState } from 'react'
-import * as Yup from 'yup'
+import { ChangeEvent, useContext, useState } from 'react'
 
 function SearchContacts() {
   const [userToSearch, setUserToSearch] = useState('')
@@ -52,88 +49,67 @@ function SearchContacts() {
     }
   }
 
-  const handleOnChange = (e: any) => {
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserToSearch(e.target.value)
   }
 
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.code === 'Enter' && handleSearchUser()
   }
 
   const handleSelectedUser = async () => {
-    const combinedIds =
-      user?.uid > usersFinded?.uid
-        ? user?.uid + usersFinded?.uid
-        : usersFinded?.uid + user?.uid
-    try {
-      const res = await getDoc(doc(db, 'chats', combinedIds))
-
-      if (!res.exists()) {
-        await setDoc(doc(db, 'chats', combinedIds), { messages: [] })
-
-        await updateDoc(doc(db, 'userChats', user.uid), {
-          [combinedIds + '.userInfo']: {
-            uid: usersFinded?.uid,
-            displayName: usersFinded?.displayName,
-            photoURL: usersFinded?.photoURL
-          },
-          [combinedIds + '.date']: serverTimestamp()
-        })
-
-        await updateDoc(doc(db, 'userChats', usersFinded?.uid), {
-          [combinedIds + '.userInfo']: {
-            uid: user?.uid,
-            displayName: user?.displayName,
-            photoURL: user?.photoURL
-          },
-          [combinedIds + '.date']: serverTimestamp()
-        })
-      }
-    } catch (error) {
-      console.log(error)
-    }
+    const userSelected = usersFinded
     setUsersFinded(undefined)
+
+    if (user) {
+      const combinedIds =
+        user.uid > userSelected?.uid
+          ? user.uid + userSelected?.uid
+          : userSelected?.uid + user.uid
+      try {
+        const res = await getDoc(doc(db, 'chats', combinedIds))
+
+        if (!res.exists()) {
+          await setDoc(doc(db, 'chats', combinedIds), { messages: [] })
+
+          await updateDoc(doc(db, 'userChats', user.uid), {
+            [combinedIds + '.userInfo']: {
+              uid: userSelected?.uid,
+              displayName: userSelected?.displayName,
+              photoURL: userSelected?.photoURL
+            },
+            [combinedIds + '.date']: serverTimestamp()
+          })
+
+          await updateDoc(doc(db, 'userChats', userSelected?.uid), {
+            [combinedIds + '.userInfo']: {
+              uid: user.uid,
+              displayName: user.displayName,
+              photoURL: user.photoURL
+            },
+            [combinedIds + '.date']: serverTimestamp()
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
     setUserToSearch('')
   }
 
-  const initialValues = {
-    searchUser: '' as string
-  }
-
-  const validationSchema = Yup.object().shape({
-    searchUser: Yup.string()
-  })
   return (
     <Flex flexDir={'column'} w={'100%'} gap={4}>
       <Box w={'100%'} bg={colors.seventhColor} rounded={'8px'}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          enableReinitialize
-          onSubmit={handleKeyDown}>
-          {(formik) => (
-            <form onSubmit={formik.handleSubmit}>
-              <FormControl
-                isInvalid={Boolean(
-                  formik.errors.searchUser && formik.touched.searchUser
-                )}>
-                <Field
-                  px={4}
-                  name={'searchUser'}
-                  variant={'unstyled'}
-                  placeholder={'Encuentra un usuario...'}
-                  as={Input}
-                  value={userToSearch}
-                  h={'45px'}
-                  onKeyDown={handleKeyDown}
-                  onChange={handleOnChange}
-                />
-              </FormControl>
-            </form>
-          )}
-        </Formik>
+        <Input
+          px={4}
+          variant={'unstyled'}
+          placeholder={'Encuentra un usuario...'}
+          value={userToSearch}
+          h={'45px'}
+          onKeyDown={handleKeyDown}
+          onChange={handleOnChange}
+        />
       </Box>
-
       {isSearchingUser && (
         <Flex justifyContent={'center'} alignItems={'center'}>
           <Spinner />
