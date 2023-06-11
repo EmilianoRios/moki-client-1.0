@@ -31,10 +31,10 @@ function Login() {
 
       if (firebaseError.code === 'auth/user-not-found') {
         // Mostrar mensaje de correo electrónico ya en uso al usuario
-        setErrorCodeAuth('Usuario o contraeña incorrectas.')
+        setErrorCodeAuth('Usuario o contraseña incorrectas.')
       } else if (firebaseError.code === 'auth/wrong-password') {
         // Mostrar mensaje de correo electrónico inválido al usuario
-        setErrorCodeAuth('Usuario o contraeña incorrectas.')
+        setErrorCodeAuth('Usuario o contraseña incorrectas.')
       } else {
         setErrorCodeAuth('Ha ocurrido un error.')
       }

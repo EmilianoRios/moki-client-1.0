@@ -20,9 +20,10 @@ import { updateProfile } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { Field, Formik, FormikHelpers } from 'formik'
-import { ChangeEvent, useContext, useEffect, useState } from 'react'
+import { ChangeEvent, useContext, useState } from 'react'
 import { BiImageAdd } from 'react-icons/bi'
 import { Link as ReactLink, useNavigate } from 'react-router-dom'
+import { v4 as uuid } from 'uuid'
 import * as Yup from 'yup'
 
 function Register() {
@@ -45,7 +46,7 @@ function Register() {
       if (createUser.image) {
         setErrorImage('')
         const res = await signUp(createUser.email, createUser.password)
-        const storageRef = ref(storage, 'pictures/' + createUser.name)
+        const storageRef = ref(storage, 'pictures/' + uuid())
         const uploadTask = uploadBytesResumable(storageRef, createUser?.image)
 
         uploadTask.on(
@@ -251,6 +252,7 @@ function Register() {
                                     file={imageFile}
                                     width={50}
                                     height={50}
+                                    borderRadius={'full'}
                                   />
                                 </>
                               )}

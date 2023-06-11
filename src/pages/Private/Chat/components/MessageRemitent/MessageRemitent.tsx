@@ -1,20 +1,22 @@
 import colors from '@/config/configColors'
 import { Flex, Image, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 interface MessageRemitentProps {
   image: string
+  file: string | null
   message: string
   time: string
 }
 
 const MessageRemitent: React.FC<MessageRemitentProps> = ({
   image,
+  file,
   message,
   time
 }) => {
   return (
-    <Flex w={'100%'} gap={4} maxW={'70%'} alignItems={'flex-start'}>
+    <Flex mr={'auto'} gap={4} maxW={'70%'} alignItems={'flex-start'}>
       <Image
         h={50}
         w={'100%'}
@@ -34,8 +36,11 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
         alignItems={'center'}
         borderRadius={'0px 8px 8px 8px'}
         p={2}>
+        {file && (
+          <Image src={file} alt={'file'} borderRadius={'8px 8px 8px 8px'} />
+        )}
         <Text fontSize={'1rem'}>{message}</Text>
-        <Text as={'span'} alignSelf={'flex-end'}>
+        <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'}>
           {time}
         </Text>
       </Flex>

@@ -1,14 +1,14 @@
-import { Flex, Image, Text } from '@chakra-ui/react'
+import { Flex, Image } from '@chakra-ui/react'
 import { useState } from 'react'
-import TruncatedText from './TruncateText'
 
 interface Props {
   file: File
+  borderRadius: string
   width: number | string
   height: number | string
 }
 
-const PreviewFile = ({ file, width, height }: Props) => {
+const PreviewFile = ({ file, width, height, borderRadius }: Props) => {
   const [preview, setPreview] = useState<string | ArrayBuffer | null>(null)
 
   const reader = new FileReader()
@@ -27,7 +27,7 @@ const PreviewFile = ({ file, width, height }: Props) => {
     <Flex flexDir={'column'} justifyContent={'center'} alignItems={'center'}>
       <Image
         src={preview as string}
-        borderRadius={'full'}
+        borderRadius={borderRadius}
         className='preview'
         alt='Preview'
         objectFit={'cover'}

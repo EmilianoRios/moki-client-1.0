@@ -7,9 +7,13 @@ import { DocumentData, doc, onSnapshot } from 'firebase/firestore'
 import { RxCross1 } from 'react-icons/rx'
 import { BiExit } from 'react-icons/bi'
 import { db } from '@/config/firebase'
+import { ChatContext } from '@/context'
+import { ChatActionKind, ChatUserSelected } from '@/models'
+import TruncatedText from '@/utilities/TruncateText'
 
 function Contacts() {
   const { logOut, user } = useContext(AuthContext)
+  const { dispatch } = useContext(ChatContext)
   const [openProfile, setOpenProfile] = useState('none')
   const [openContacts, setOpenContacts] = useState('flex')
   const [contactChats, setContactChats] = useState<DocumentData>()
@@ -25,6 +29,10 @@ function Contacts() {
       setOpenProfile('none')
       setOpenContacts('flex')
     }
+  }
+
+  const handleSelect = (UserSelected: ChatUserSelected) => {
+    dispatch({ type: ChatActionKind.CHANGE_USER, payload: UserSelected })
   }
 
   useEffect(() => {
@@ -97,33 +105,42 @@ function Contacts() {
           rowGap={2}>
           <SearchContacts />
           {contactChats &&
-            Object.entries(contactChats)?.map((chat) => (
-              <Flex
-                key={chat[0]}
-                w={'100%'}
-                flexDir={'column'}
-                gap={4}
-                p={2}
-                borderRadius={'8px 8px 8px 8px'}
-                cursor={'pointer'}
-                _hover={{ background: colors.tertiaryColor }}>
-                <Flex columnGap={2}>
-                  <Image
-                    h={50}
-                    w={'100%'}
-                    maxW={50}
-                    borderRadius={'100%'}
-                    objectFit={'cover'}
-                    src={chat[1].userInfo.photoURL}
-                    alt={'iconUser'}
-                  />
-                  <Box color={colors.seventhColor}>
-                    <Text as='b'>{chat[1].userInfo.displayName}</Text>
-                    <Text>{chat[1].userInfo.lastMessage?.text}</Text>
-                  </Box>
+            Object.entries(contactChats)
+              ?.sort((a, b) => b[1].date - a[1].date)
+              .map((chat) => (
+                <Flex
+                  key={chat[0]}
+                  w={'100%'}
+                  flexDir={'column'}
+                  gap={4}
+                  p={2}
+                  borderRadius={'8px 8px 8px 8px'}
+                  cursor={'pointer'}
+                  _hover={{ background: colors.tertiaryColor }}
+                  onClick={() => {
+                    handleSelect(chat[1].userInfo)
+                  }}>
+                  <Flex columnGap={2}>
+                    <Image
+                      h={50}
+                      w={'100%'}
+                      maxW={50}
+                      borderRadius={'100%'}
+                      objectFit={'cover'}
+                      src={chat[1].userInfo.photoURL}
+                      alt={'iconUser'}
+                    />
+                    <Flex
+                      color={colors.seventhColor}
+                      justifyContent={'center'}
+                      flexDir={'column'}>
+                      <Text as='b'>{chat[1].userInfo.displayName}</Text>
+                      {chat[1].lastMessage?.text &&
+                        TruncatedText(chat[1].lastMessage?.text, 30)}
+                    </Flex>
+                  </Flex>
                 </Flex>
-              </Flex>
-            ))}
+              ))}
           {contactChats && Object.entries(contactChats).length === 0 ? (
             <Flex m={'0 auto'}>
               <Text>No tienes ningún contacto.</Text>

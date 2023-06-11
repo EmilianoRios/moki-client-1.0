@@ -1,20 +1,30 @@
 import colors from '@/config/configColors'
 import { Flex, Image, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 interface MessageEmitentProps {
   image: string
+  file: string | null
   message: string
   time: string
 }
 
 const MessageEmitent: React.FC<MessageEmitentProps> = ({
   image,
+  file,
   message,
   time
 }) => {
+  const scrollRefEmitent = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    scrollRefEmitent.current?.scrollIntoView({
+      behavior: 'smooth'
+    })
+  })
+
   return (
-    <Flex ml={'auto'} w={'100%'} gap={4} maxW={'70%'} alignItems={'flex-start'}>
+    <Flex ml={'auto'} gap={4} maxW={'70%'} alignItems={'flex-start'}>
       <Flex
         bg={colors.fifthColor}
         boxShadow={'0 3px 6px rgba(0,0,0,0.3)'}
@@ -24,9 +34,13 @@ const MessageEmitent: React.FC<MessageEmitentProps> = ({
         flexDir={'column'}
         alignItems={'center'}
         borderRadius={'8px 0px 8px 8px'}
-        p={2}>
+        p={2}
+        ref={scrollRefEmitent}>
+        {file && (
+          <Image src={file} alt={'file'} borderRadius={'8px 8px 8px 8px'} />
+        )}
         <Text fontSize={'1rem'}>{message}</Text>
-        <Text as={'span'} alignSelf={'flex-end'}>
+        <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'}>
           {time}
         </Text>
       </Flex>

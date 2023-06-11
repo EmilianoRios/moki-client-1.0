@@ -31,21 +31,26 @@ function SearchContacts() {
   const { user } = useContext(AuthContext)
 
   const handleSearchUser = async () => {
-    setIsSearchingUser(true)
-    const q = query(
-      collection(db, 'users'),
-      where('displayName', '==', userToSearch)
-    )
+    if (userToSearch) {
+      setIsSearchingUser(true)
+      const q = query(
+        collection(db, 'users'),
+        where('displayName', '==', userToSearch)
+      )
 
-    try {
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        setUsersFinded(doc.data())
-      })
-      setIsSearchingUser(false)
-    } catch (error) {
+      try {
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          setUsersFinded(doc.data())
+        })
+
+        setIsSearchingUser(false)
+      } catch (error) {
+        setUsersFinded([])
+        setIsSearchingUser(false)
+      }
+    } else {
       setUsersFinded([])
-      setIsSearchingUser(false)
     }
   }
 
@@ -115,7 +120,7 @@ function SearchContacts() {
           <Spinner />
         </Flex>
       )}
-      {usersFinded && (
+      {usersFinded && Object.entries(usersFinded).length > 0 ? (
         <Flex
           w={'100%'}
           flexDir={'column'}
@@ -145,6 +150,8 @@ function SearchContacts() {
             </Flex>
           </Flex>
         </Flex>
+      ) : (
+        ''
       )}
       <Divider />
     </Flex>
