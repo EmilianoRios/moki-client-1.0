@@ -36,7 +36,7 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
         w={'100%'}
         h={'auto'}
         flexDir={'column'}
-        alignItems={'center'}
+        alignItems={'flex-start'}
         borderRadius={'0px 8px 8px 8px'}
         p={2}>
         {file && fileType === 'image' ? (
@@ -67,7 +67,7 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
           ''
         )}
         <Text fontSize={'1rem'}>{message}</Text>
-        <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'}>
+        <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'} w={'100%'}>
           {time}
         </Text>
       </Flex>
