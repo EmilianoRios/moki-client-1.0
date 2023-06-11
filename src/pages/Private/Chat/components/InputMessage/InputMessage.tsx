@@ -17,7 +17,12 @@ import {
   serverTimestamp,
   updateDoc
 } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import {
+  StorageReference,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable
+} from 'firebase/storage'
 import { Field, Formik, FormikHelpers } from 'formik'
 import { ChangeEvent, useContext, useState } from 'react'
 import { AiOutlinePaperClip } from 'react-icons/ai'
@@ -36,7 +41,17 @@ function InputMessage() {
     actions: FormikHelpers<MyFormValues>
   ) => {
     if (inputFile) {
-      const storageRef = ref(storage, 'chatsimages/' + uuid())
+      const fileType = inputFile['type'].split('/')[0]
+
+      let storageRef = ref(storage, 'chatsimage/' + uuid())
+
+      if (fileType === 'application') {
+        storageRef = ref(storage, 'chatsdocuments/' + inputFile.name)
+      } else if (fileType === 'video') {
+        storageRef = ref(storage, 'chatsvideos/' + uuid())
+      } else if (fileType === 'audio') {
+        storageRef = ref(storage, 'chatsaudio/' + uuid())
+      }
 
       const uploadTask = uploadBytesResumable(storageRef, inputFile)
 
@@ -74,7 +89,8 @@ function InputMessage() {
                   text: values.message,
                   senderId: user?.uid,
                   date: Timestamp.now(),
-                  file: downloadURL
+                  file: downloadURL,
+                  fileType: fileType
                 })
               })
             }

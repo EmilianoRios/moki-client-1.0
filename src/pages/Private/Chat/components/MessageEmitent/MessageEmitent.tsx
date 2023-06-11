@@ -1,10 +1,12 @@
 import colors from '@/config/configColors'
-import { Flex, Image, Text } from '@chakra-ui/react'
+import { Flex, Icon, Image, Link, Text } from '@chakra-ui/react'
 import React, { useEffect, useRef } from 'react'
+import { HiDocumentArrowDown } from 'react-icons/hi2'
 
 interface MessageEmitentProps {
   image: string
   file: string | null
+  fileType: string | null
   message: string
   time: string
 }
@@ -12,6 +14,7 @@ interface MessageEmitentProps {
 const MessageEmitent: React.FC<MessageEmitentProps> = ({
   image,
   file,
+  fileType,
   message,
   time
 }) => {
@@ -36,8 +39,32 @@ const MessageEmitent: React.FC<MessageEmitentProps> = ({
         borderRadius={'8px 0px 8px 8px'}
         p={2}
         ref={scrollRefEmitent}>
-        {file && (
+        {file && fileType === 'image' ? (
           <Image src={file} alt={'file'} borderRadius={'8px 8px 8px 8px'} />
+        ) : (
+          ''
+        )}
+        {file && fileType === 'video' ? (
+          <video src={file} width={'100%'} height={'100%'} controls></video>
+        ) : (
+          ''
+        )}
+        {file && fileType === 'audio' ? (
+          <audio controls>
+            <source src={file}></source>
+          </audio>
+        ) : (
+          ''
+        )}
+        {file && fileType === 'application' ? (
+          <>
+            <Link href={file} isExternal>
+              <Icon w={100} h={100} as={HiDocumentArrowDown} />
+            </Link>
+            <Text>Archivo</Text>
+          </>
+        ) : (
+          ''
         )}
         <Text fontSize={'1rem'}>{message}</Text>
         <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'}>

@@ -19,6 +19,7 @@ function Message({ message }: Props) {
           image={user?.photoURL as string}
           message={message.text}
           file={message.file ? message.file : null}
+          fileType={message.fileType ? message.fileType : null}
           time={'ahora'}
         />
       ) : (
@@ -27,6 +28,7 @@ function Message({ message }: Props) {
           image={data.user?.photoURL as string}
           message={message.text}
           file={message.file ? message.file : null}
+          fileType={message.fileType ? message.fileType : null}
           time={'ahora'}
         />
       )}

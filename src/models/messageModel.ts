@@ -4,4 +4,5 @@ export interface MessageModel {
   date: Date
   text: string
   file: string
+  fileType: string
 }
