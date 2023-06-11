@@ -15,7 +15,6 @@ function Message({ message }: Props) {
     <>
       {message.senderId === user?.uid ? (
         <MessageEmitent
-          key={message.id}
           image={user?.photoURL as string}
           message={message.text}
           file={message.file ? message.file : null}
@@ -24,7 +23,6 @@ function Message({ message }: Props) {
         />
       ) : (
         <MessageRemitent
-          key={message.id}
           image={data.user?.photoURL as string}
           message={message.text}
           file={message.file ? message.file : null}

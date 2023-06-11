@@ -2,6 +2,7 @@ import colors from '@/config/configColors'
 import { db, storage } from '@/config/firebase'
 import { AuthContext, ChatContext } from '@/context'
 import PreviewFile from '@/utilities/PreviewImage'
+import TruncatedText from '@/utilities/TruncateText'
 import {
   Box,
   Button,
@@ -17,16 +18,14 @@ import {
   serverTimestamp,
   updateDoc
 } from 'firebase/firestore'
-import {
-  StorageReference,
-  getDownloadURL,
-  ref,
-  uploadBytesResumable
-} from 'firebase/storage'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { Field, Formik, FormikHelpers } from 'formik'
 import { ChangeEvent, useContext, useState } from 'react'
 import { AiOutlinePaperClip } from 'react-icons/ai'
+import { FaFileAudio } from 'react-icons/fa'
+import { HiDocument } from 'react-icons/hi2'
 import { IoIosSend } from 'react-icons/io'
+import { MdVideoFile } from 'react-icons/md'
 import { v4 as uuid } from 'uuid'
 import * as Yup from 'yup'
 
@@ -35,11 +34,13 @@ function InputMessage() {
   const { data } = useContext(ChatContext)
 
   const [inputFile, setInputFile] = useState<File | undefined>(undefined)
+  const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false)
 
   const onSubmit = async (
     values: MyFormValues,
     actions: FormikHelpers<MyFormValues>
   ) => {
+    setIsSendingMessage(true)
     if (inputFile) {
       const fileType = inputFile['type'].split('/')[0]
 
@@ -59,9 +60,6 @@ function InputMessage() {
         'state_changed',
         (snapshot) => {
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100 + 1
-          console.log(progress + '%')
         },
         (error) => {
           switch (error.code) {
@@ -93,6 +91,9 @@ function InputMessage() {
                   fileType: fileType
                 })
               })
+              setInputFile(undefined)
+              actions.resetForm()
+              setIsSendingMessage(false)
             }
           })
         }
@@ -126,8 +127,9 @@ function InputMessage() {
       })
     }
 
-    actions.resetForm()
     setInputFile(undefined)
+    actions.resetForm()
+    setIsSendingMessage(false)
   }
 
   const handleImageFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -156,7 +158,7 @@ function InputMessage() {
   return (
     <Flex>
       <Box w={'100%'} bg={colors.seventhColor} borderRadius={'8px 8px 8px 8px'}>
-        {inputFile && (
+        {inputFile && inputFile['type'].split('/')[0] === 'image' ? (
           <>
             <Flex flexDir={'column'} p={2} onClick={deleteImageFile}>
               <PreviewFile
@@ -167,6 +169,56 @@ function InputMessage() {
               />
             </Flex>
           </>
+        ) : (
+          ''
+        )}
+        {inputFile && inputFile['type'].split('/')[0] === 'audio' ? (
+          <>
+            <Flex flexDir={'column'} p={2} onClick={deleteImageFile}>
+              <Flex
+                flexDir={'column'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                gap={1}>
+                <Icon as={FaFileAudio} w={100} h={100} />
+                {TruncatedText(inputFile.name, 30)}
+              </Flex>
+            </Flex>
+          </>
+        ) : (
+          ''
+        )}
+        {inputFile && inputFile['type'].split('/')[0] === 'application' ? (
+          <>
+            <Flex flexDir={'column'} p={2} onClick={deleteImageFile}>
+              <Flex
+                flexDir={'column'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                gap={1}>
+                <Icon as={HiDocument} w={100} h={100} />
+                {TruncatedText(inputFile.name, 30)}
+              </Flex>
+            </Flex>
+          </>
+        ) : (
+          ''
+        )}
+        {inputFile && inputFile['type'].split('/')[0] === 'video' ? (
+          <>
+            <Flex flexDir={'column'} p={2} onClick={deleteImageFile}>
+              <Flex
+                flexDir={'column'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                gap={1}>
+                <Icon as={MdVideoFile} w={100} h={100} />
+                {TruncatedText(inputFile.name, 30)}
+              </Flex>
+            </Flex>
+          </>
+        ) : (
+          ''
         )}
         <Formik
           initialValues={initialValues}
@@ -217,8 +269,8 @@ function InputMessage() {
                   </Flex>
                 </Button>
                 <Button
+                  isLoading={isSendingMessage}
                   type='submit'
-                  variant='unstyled'
                   _hover={{ background: colors.primaryColor }}
                   bg={colors.sixthColor}
                   rounded={'full'}>

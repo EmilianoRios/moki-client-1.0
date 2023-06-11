@@ -23,7 +23,9 @@ function Messages() {
   return (
     <>
       {messagesChat &&
-        messagesChat.map((message: any) => <Message message={message} />)}
+        messagesChat.map((message: any) => (
+          <Message key={message.id} message={message} />
+        ))}
     </>
   )
 }
