@@ -1,11 +1,15 @@
 import { ChatLayout } from '@/components'
-import { Contacts, PrivateChat } from '.'
+import { ChatContext } from '@/context'
+import { useContext } from 'react'
+import { Contacts, PrivateChat, Welcome } from '.'
 
 function Chat() {
+  const { data } = useContext(ChatContext)
+
   return (
     <ChatLayout>
       <Contacts />
-      <PrivateChat />
+      {data.user ? <PrivateChat /> : <Welcome />}
     </ChatLayout>
   )
 }

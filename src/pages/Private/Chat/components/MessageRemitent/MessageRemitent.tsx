@@ -1,6 +1,6 @@
 import colors from '@/config/configColors'
 import { Flex, Image, Text } from '@chakra-ui/react'
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 
 interface MessageRemitentProps {
   image: string
