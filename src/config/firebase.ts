@@ -3,12 +3,12 @@ import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 const firebaseConfig = {
-  apiKey: 'AIzaSyAAqmwATunGrEasJbtRWJAkAFmh4__AFy4',
-  authDomain: 'mokichat-e59a0.firebaseapp.com',
-  projectId: 'mokichat-e59a0',
-  storageBucket: 'mokichat-e59a0.appspot.com',
-  messagingSenderId: '423440858895',
-  appId: '1:423440858895:web:f6606a192d029a7fcc487a'
+  apiKey: 'AIzaSyDcLzb8VdBQM2Wtta0Dg3kvBodnoWEBt5g',
+  authDomain: 'mokichat01.firebaseapp.com',
+  projectId: 'mokichat01',
+  storageBucket: 'mokichat01.appspot.com',
+  messagingSenderId: '27997724781',
+  appId: '1:27997724781:web:d50759dcea5de4cba99f64'
 }
 
 // Initialize Firebase
