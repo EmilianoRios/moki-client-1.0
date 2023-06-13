@@ -4,6 +4,7 @@ import {
   User,
   UserCredential,
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth'
@@ -34,7 +35,7 @@ export function AuthProvider({ children }: Props) {
   const logOut = (): Promise<void> => signOut(auth)
 
   useEffect(() => {
-    const unsubsrcibe = auth.onAuthStateChanged((user) => {
+    const unsubsrcibe = onAuthStateChanged(auth, (user) => {
       setUser(user)
       setIsLoadingAuth(false)
     })

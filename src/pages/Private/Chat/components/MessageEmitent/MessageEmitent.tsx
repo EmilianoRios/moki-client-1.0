@@ -1,5 +1,5 @@
 import colors from '@/config/configColors'
-import { Flex, Icon, Image, Link, Text } from '@chakra-ui/react'
+import { Box, Flex, Icon, Image, Link, Text } from '@chakra-ui/react'
 import React, { useEffect, useRef } from 'react'
 import { HiDocumentArrowDown } from 'react-icons/hi2'
 
@@ -66,7 +66,9 @@ const MessageEmitent: React.FC<MessageEmitentProps> = ({
         ) : (
           ''
         )}
-        <Text fontSize={'1rem'}>{message}</Text>
+        <Text fontSize={'1rem'} wordBreak={'break-word'}>
+          {message}
+        </Text>
         <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'}>
           {time}
         </Text>

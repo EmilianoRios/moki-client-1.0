@@ -8,7 +8,9 @@ import {
   Button,
   Flex,
   FormControl,
+  FormErrorMessage,
   Icon,
+  Input,
   Textarea
 } from '@chakra-ui/react'
 import {
@@ -151,7 +153,7 @@ function InputMessage() {
   }
 
   const validationSchema = Yup.object().shape({
-    message: Yup.string().required('Ingrese un mensaje...'),
+    message: Yup.string().required('Ingrese un mensaje.'),
     file: Yup.mixed()
   })
 
@@ -237,6 +239,7 @@ function InputMessage() {
                     variant={'filled'}
                     placeholder={'Mensaje'}
                     as={Textarea}
+                    maxLength={2000}
                     maxHeight={'100px'}
                     minHeight={'45px'}
                   />
@@ -250,6 +253,7 @@ function InputMessage() {
                     <Field
                       id={'file'}
                       type={'file'}
+                      accept='image/*, video/*, audio/*,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.pdf,.pptx'
                       name={'image'}
                       onChange={handleImageFile}
                     />

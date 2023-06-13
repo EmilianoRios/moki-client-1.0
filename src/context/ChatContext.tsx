@@ -23,7 +23,7 @@ export function ChatProvider({ children }: Props) {
     user: null
   }
 
-  const chatReducer = (state: ChatInitalState, action: ChatActions) => {
+  const chatReducer = (state = INITIAL_STATE, action: ChatActions) => {
     switch (action.type) {
       case ChatActionKind.CHANGE_USER:
         return {

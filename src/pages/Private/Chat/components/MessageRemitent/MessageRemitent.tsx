@@ -66,7 +66,9 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
         ) : (
           ''
         )}
-        <Text fontSize={'1rem'}>{message}</Text>
+        <Text fontSize={'1rem'} wordBreak={'break-word'}>
+          {message}
+        </Text>
         <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'} w={'100%'}>
           {time}
         </Text>

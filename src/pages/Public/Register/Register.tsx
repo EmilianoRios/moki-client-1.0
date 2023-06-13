@@ -118,6 +118,8 @@ function Register() {
       } else {
         setErrorCodeAuth('Ha ocurrido un error.')
       }
+
+      setIsLoadingRegister(false)
     }
   }
 
@@ -229,6 +231,7 @@ function Register() {
                         <Field
                           id={'file'}
                           type='file'
+                          accept='image/*'
                           name='image'
                           onChange={handleImageFile}
                         />
