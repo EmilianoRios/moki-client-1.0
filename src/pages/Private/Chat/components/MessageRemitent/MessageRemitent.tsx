@@ -1,6 +1,6 @@
 import colors from '@/config/configColors'
 import { Flex, Icon, Image, Link, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { HiDocumentArrowDown } from 'react-icons/hi2'
 
 interface MessageRemitentProps {
@@ -18,6 +18,13 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
   message,
   time
 }) => {
+  const scrollRefRemitent = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    scrollRefRemitent.current?.scrollIntoView({
+      behavior: 'smooth'
+    })
+  })
   return (
     <Flex gap={4} maxW={'70%'} alignItems={'flex-start'}>
       <Image
@@ -38,7 +45,8 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
         flexDir={'column'}
         alignItems={'flex-start'}
         borderRadius={'0px 8px 8px 8px'}
-        p={2}>
+        p={2}
+        ref={scrollRefRemitent}>
         {file && fileType === 'image' ? (
           <Image src={file} alt={'file'} borderRadius={'8px 8px 8px 8px'} />
         ) : (
