@@ -19,7 +19,7 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
   time
 }) => {
   return (
-    <Flex mr={'auto'} gap={4} maxW={'70%'} alignItems={'flex-start'}>
+    <Flex gap={4} maxW={'70%'} alignItems={'flex-start'}>
       <Image
         h={50}
         w={'100%'}
@@ -33,7 +33,7 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
         bg={colors.sixthColor}
         boxShadow={'0 3px 6px rgba(0,0,0,0.3)'}
         mb={2}
-        w={'100%'}
+        w={'auto'}
         h={'auto'}
         flexDir={'column'}
         alignItems={'flex-start'}
@@ -69,7 +69,7 @@ const MessageRemitent: React.FC<MessageRemitentProps> = ({
         <Text fontSize={'1rem'} wordBreak={'break-word'}>
           {message}
         </Text>
-        <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-end'} w={'100%'}>
+        <Text fontSize={'0.8rem'} as={'span'} alignSelf={'flex-start'}>
           {time}
         </Text>
       </Flex>
