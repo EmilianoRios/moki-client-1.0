@@ -8,9 +8,7 @@ import {
   Button,
   Flex,
   FormControl,
-  FormErrorMessage,
   Icon,
-  Input,
   Textarea
 } from '@chakra-ui/react'
 import {

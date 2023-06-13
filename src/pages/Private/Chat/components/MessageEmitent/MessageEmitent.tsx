@@ -1,5 +1,5 @@
 import colors from '@/config/configColors'
-import { Box, Flex, Icon, Image, Link, Text } from '@chakra-ui/react'
+import { Flex, Icon, Image, Link, Text } from '@chakra-ui/react'
 import React, { useEffect, useRef } from 'react'
 import { HiDocumentArrowDown } from 'react-icons/hi2'
 
