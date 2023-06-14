@@ -28,7 +28,6 @@ function Message({ message }: Props) {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTime(handleTimeStampo(message.date))
-      console.log('HOLA')
     }, 60000)
 
     return () => {
