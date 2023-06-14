@@ -12,7 +12,6 @@ interface Props {
 function Message({ message }: Props) {
   const { user } = useContext(AuthContext)
   const { data } = useContext(ChatContext)
-  const [time, setTime] = useState<string>('')
 
   const handleTimeStampo = (currentDate: any) => {
     const timestamp = new Date(
@@ -24,15 +23,18 @@ function Message({ message }: Props) {
     return timeElapsed
   }
 
+  const [time, setTime] = useState<string>(handleTimeStampo(message.date))
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTime(handleTimeStampo(message.date))
-    }, 1000) // Actualizar cada segundo
+      console.log('HOLA')
+    }, 60000)
 
     return () => {
       clearInterval(intervalId)
     }
-  }, [message])
+  }, [message.date])
 
   return (
     <>
