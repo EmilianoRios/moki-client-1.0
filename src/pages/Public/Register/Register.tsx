@@ -42,8 +42,9 @@ function Register() {
   ) => {
     setIsLoadingRegister(true)
     const createUser = { ...values, image: imageFile }
+    const maxSizeInBytes = 5 * 1024 * 1024
     try {
-      if (createUser.image) {
+      if (createUser.image && createUser.image.size < maxSizeInBytes) {
         setErrorImage('')
         const res = await signUp(createUser.email, createUser.password)
         const storageRef = ref(storage, 'pictures/' + uuid())
@@ -100,7 +101,11 @@ function Register() {
           }
         )
       } else {
-        setErrorImage('No seleccionado una imagen de perfil!.')
+        if (createUser.image && createUser.image.size > maxSizeInBytes) {
+          setErrorImage('Tamaño máximo de imagen 5MB.')
+        } else {
+          setErrorImage('No seleccionado una foto de perfil.')
+        }
         setIsLoadingRegister(false)
       }
     } catch (error) {
@@ -264,7 +269,9 @@ function Register() {
                         </Flex>
                       </label>
                       {errorImage && (
-                        <Text color={colors.eleventhColor}>{errorImage}</Text>
+                        <Flex justifyContent={'center'}>
+                          <Text color={colors.eleventhColor}>{errorImage}</Text>
+                        </Flex>
                       )}
                       <FormErrorMessage
                         justifyContent={'center'}

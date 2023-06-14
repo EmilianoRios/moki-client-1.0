@@ -9,7 +9,8 @@ import {
   Flex,
   FormControl,
   Icon,
-  Textarea
+  Textarea,
+  Tooltip
 } from '@chakra-ui/react'
 import {
   Timestamp,
@@ -35,13 +36,17 @@ function InputMessage() {
 
   const [inputFile, setInputFile] = useState<File | undefined>(undefined)
   const [isSendingMessage, setIsSendingMessage] = useState<boolean>(false)
+  const [errorFile, setErrorFile] = useState<string>()
+  const [showAlert, setShowAlert] = useState<boolean>(false)
 
   const onSubmit = async (
     values: MyFormValues,
     actions: FormikHelpers<MyFormValues>
   ) => {
+    const maxSizeInBytes = 12 * 1024 * 1024
+    let messageIsSended = false
     setIsSendingMessage(true)
-    if (inputFile) {
+    if (inputFile && inputFile.size < maxSizeInBytes) {
       const fileType = inputFile['type'].split('/')[0]
 
       let storageRef = ref(storage, 'chatsimage/' + uuid())
@@ -98,6 +103,14 @@ function InputMessage() {
           })
         }
       )
+      messageIsSended = true
+    } else if (inputFile && inputFile.size > maxSizeInBytes) {
+      setErrorFile('Tamaño máximo de imagen 12MB.')
+      setShowAlert(true)
+      setTimeout(() => {
+        setShowAlert(false)
+      }, 3000)
+      setInputFile(undefined)
     } else {
       await updateDoc(doc(db, 'chats', data.chatId as string), {
         messages: arrayUnion({
@@ -107,24 +120,27 @@ function InputMessage() {
           date: Timestamp.now()
         })
       })
+      messageIsSended = true
     }
 
-    if (user) {
-      await updateDoc(doc(db, 'userChats', user.uid), {
-        [data.chatId + '.lastMessage']: {
-          text: values.message
-        },
-        [data.chatId + '.date']: serverTimestamp()
-      })
-    }
+    if (messageIsSended) {
+      if (user) {
+        await updateDoc(doc(db, 'userChats', user.uid), {
+          [data.chatId + '.lastMessage']: {
+            text: values.message
+          },
+          [data.chatId + '.date']: serverTimestamp()
+        })
+      }
 
-    if (data.user) {
-      await updateDoc(doc(db, 'userChats', data.user.uid), {
-        [data.chatId + '.lastMessage']: {
-          text: values.message
-        },
-        [data.chatId + '.date']: serverTimestamp()
-      })
+      if (data.user) {
+        await updateDoc(doc(db, 'userChats', data.user.uid), {
+          [data.chatId + '.lastMessage']: {
+            text: values.message
+          },
+          [data.chatId + '.date']: serverTimestamp()
+        })
+      }
     }
 
     setInputFile(undefined)
@@ -257,19 +273,26 @@ function InputMessage() {
                     />
                   </Flex>
                 </FormControl>
-                <Button
-                  variant='unstyled'
-                  _hover={{ background: colors.primaryColor }}
-                  rounded={'full'}>
-                  <Flex
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                    mt={'5px'}>
-                    <label htmlFor={'file'}>
-                      <Icon as={AiOutlinePaperClip} fontSize={30} />
-                    </label>
-                  </Flex>
-                </Button>
+                <Tooltip
+                  label={errorFile}
+                  hasArrow
+                  placement='top'
+                  closeOnClick={true}
+                  isOpen={showAlert}>
+                  <Button
+                    variant='unstyled'
+                    _hover={{ background: colors.primaryColor }}
+                    rounded={'full'}>
+                    <Flex
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      mt={'5px'}>
+                      <label htmlFor={'file'}>
+                        <Icon as={AiOutlinePaperClip} fontSize={30} />
+                      </label>
+                    </Flex>
+                  </Button>
+                </Tooltip>
                 <Button
                   isLoading={isSendingMessage}
                   type='submit'
